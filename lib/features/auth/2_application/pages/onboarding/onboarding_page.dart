@@ -111,12 +111,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   isFullWidth: true,
                   buttonText: 'Next Step',
                   onPressed: () {
-                    setState(() {
-                      currentIndex.sink.add(takenIndex + 1);
-                      pageController.animateToPage(takenIndex,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                    });
+                    
+                    // setState(() {
+                    //   currentIndex.sink.add(takenIndex + 1);
+                    //   pageController.animateToPage(takenIndex,
+                    //       duration: const Duration(milliseconds: 500),
+                    //       curve: Curves.easeIn);
+                    // });
                   },
                   heightSize: 60,
                 ),
