@@ -9,12 +9,14 @@ class OneLinerTextField extends StatefulWidget {
       this.hintText,
       this.selectedValidator,
       this.maxLength,
-      this.minLength});
+      this.minLength,
+      this.onChanged});
 
   final String? title;
   final String? hintText;
   final int? minLength;
   final int? maxLength;
+  final void Function(String)? onChanged;
   final ValidatorType? selectedValidator;
 
   @override
@@ -65,6 +67,7 @@ class _OneLinerTextFieldState extends State<OneLinerTextField> {
           ),
         TextFormField(
           onChanged: (value) {
+            widget.onChanged!.call(value);
             setState(() {});
           },
           obscureText: isObscure,

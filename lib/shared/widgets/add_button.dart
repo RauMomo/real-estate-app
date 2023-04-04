@@ -73,7 +73,7 @@ class AddButton extends StatelessWidget {
   _buildOutlinedButton(BuildContext context) {
     final theme = Theme.of(context);
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: theme.textButtonTheme.style!.copyWith(
         fixedSize: MaterialStatePropertyAll(
           Size.fromHeight(heightSize),
