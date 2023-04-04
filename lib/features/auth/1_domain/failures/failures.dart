@@ -16,3 +16,13 @@ class GeneralFailure extends Failure with EquatableMixin {
   @override
   List<Object?> get props => [];
 }
+
+class EmailNotFoundFailure extends Failure with EquatableMixin {
+  @override
+  List<Object?> get props => [];
+}
+
+class InvalidLoginFailure extends Failure with EquatableMixin {
+  @override
+  List<Object?> get props => [];
+}
