@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:real_estate_app/app/network/observer/bloc_observer.dart';
+import 'package:real_estate_app/app/network/provider/db_provider.dart';
 import 'package:real_estate_app/app/routing/app_route.dart';
 import 'package:real_estate_app/app/theme/theme_service.dart';
 import 'package:real_estate_app/core/dependency_injection.dart' as di;
@@ -47,7 +48,16 @@ class MyApp extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        routes: appRoute.routes,
+        // initialRoute: sl<DBProvider>().user == null ? '/' : '/home',
+        routes: appRoute.routes(sl<DBProvider>().user != null),
+        // onGenerateInitialRoutes: (settings) {
+        //   if (settings == '/') {
+        //     if (sl<DBProvider>().user != null) {
+        //       Navigator.pushReplacementNamed(context, HomePage.path);
+        //     }
+        //   }
+        //   return <Route>[Route(settings: )];
+        // },
       ),
     );
   }

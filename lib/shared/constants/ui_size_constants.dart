@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const Widget hSpaceTiny = SizedBox(width: 5.0);
-const Widget hSpaceSmall = SizedBox(width: 10.0);
+const Widget hSpaceSmall = SizedBox(width: 13.0);
 const Widget hSpaceRegular = SizedBox(width: 18.0);
 const Widget hSpaceMedium = SizedBox(width: 25.0);
 const Widget hSpaceLarge = SizedBox(width: 50.0);

@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:real_estate_app/shared/constants/colors.dart';
 import 'package:real_estate_app/shared/util/validators.dart';
 
+enum ControlAffinity {
+  leading,
+  trailing,
+}
+
 class OneLinerTextField extends StatefulWidget {
-  const OneLinerTextField(
-      {super.key,
-      this.title,
-      this.hintText,
-      this.selectedValidator,
-      this.maxLength,
-      this.minLength,
-      this.onChanged});
+  const OneLinerTextField({
+    super.key,
+    this.title,
+    this.hintText,
+    this.selectedValidator,
+    this.maxLength,
+    this.minLength,
+    this.affinity,
+    this.onChanged,
+    this.needValidation,
+    this.containsIcon,
+  });
 
   final String? title;
   final String? hintText;
@@ -18,6 +27,9 @@ class OneLinerTextField extends StatefulWidget {
   final int? maxLength;
   final void Function(String)? onChanged;
   final ValidatorType? selectedValidator;
+  final ControlAffinity? affinity;
+  final bool? needValidation;
+  final bool? containsIcon;
 
   @override
   _OneLinerTextFieldState createState() {
@@ -36,6 +48,9 @@ class _OneLinerTextFieldState extends State<OneLinerTextField> {
   late int? maxLength;
   var isValid = false;
   var isObscure = false;
+  late ControlAffinity controlAffinity;
+  late bool needValidation;
+  late bool containsIcon;
   late String title;
 
   @override
@@ -43,10 +58,15 @@ class _OneLinerTextFieldState extends State<OneLinerTextField> {
     super.initState();
     controller = TextEditingController();
     selectedValidator = widget.selectedValidator ?? defaultValidator;
+    isObscure = selectedValidator == ValidatorType.password ? true : false;
     title = widget.title ?? '';
     hintText = widget.hintText ?? 'Input $title';
+    controlAffinity = widget.affinity ?? ControlAffinity.trailing;
     minLength = widget.minLength ?? 0;
     maxLength = widget.maxLength ?? 0;
+    containsIcon = widget.containsIcon ?? true;
+    needValidation = widget.needValidation ?? true;
+
     stringValidator = FormValidatorBuilder()
         .minLength(minLength, selectedValidator.name)
         .maxLength(maxLength, selectedValidator.name)
@@ -56,44 +76,9 @@ class _OneLinerTextFieldState extends State<OneLinerTextField> {
 
   @override
   Widget build(BuildContext context) {
-    var textTheme = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (title.isNotEmpty)
-          Text(
-            title.toUpperCase(),
-            style: textTheme.headlineSmall,
-          ),
-        TextFormField(
-          onChanged: (value) {
-            widget.onChanged!.call(value);
-            setState(() {});
-          },
-          obscureText: isObscure,
-          controller: controller,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: stringValidator,
-          autocorrect: true,
-          cursorColor: ColorConstants.kPrimary,
-          maxLines: maxLines,
-          decoration: InputDecoration(
-            border: const UnderlineInputBorder(
-              borderSide: BorderSide(width: 2.0, color: Colors.red),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide:
-                  BorderSide(width: 1.0, color: ColorConstants.kGrey600),
-            ),
-            enabled: true,
-            hintText: hintText,
-            suffixIcon: selectedValidator == ValidatorType.password
-                ? _buildPasswordIcon()
-                : _buildStatusIcon(),
-          ),
-        ),
-      ],
-    );
+    return needValidation
+        ? _buildTextFormValidationEnabled()
+        : _buildSearchBarForm();
   }
 
   _buildPasswordIcon() {
@@ -129,5 +114,89 @@ class _OneLinerTextFieldState extends State<OneLinerTextField> {
             Icons.close_outlined,
             color: ColorConstants.kError,
           );
+  }
+
+  Widget _buildTextFormValidationEnabled() {
+    var textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (title.isNotEmpty)
+          Text(
+            title.toUpperCase(),
+            style: textTheme.headlineSmall,
+          ),
+        TextFormField(
+          scrollPadding: const EdgeInsets.all(30),
+          onChanged: (value) {
+            widget.onChanged!.call(value);
+            setState(() {});
+          },
+          obscureText: isObscure,
+          controller: controller,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: stringValidator,
+          autocorrect: true,
+          cursorColor: ColorConstants.kPrimary,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+              border: const UnderlineInputBorder(
+                borderSide: BorderSide(width: 2.0, color: Colors.red),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide:
+                    BorderSide(width: 1.0, color: ColorConstants.kGrey600),
+              ),
+              enabled: true,
+              hintText: hintText,
+              suffixIcon:
+                  !containsIcon ? const SizedBox.shrink() : _buildSuffixIcon()),
+        ),
+      ],
+    );
+  }
+
+  _buildSuffixIcon() {
+    return selectedValidator == ValidatorType.password
+        ? _buildPasswordIcon()
+        : _buildStatusIcon();
+  }
+
+  _buildSearchBarForm() {
+    final textStyle = Theme.of(context).textTheme.bodyMedium;
+    return TextField(
+      maxLines: maxLines,
+      keyboardAppearance: Brightness.dark,
+      onChanged: (value) {
+        widget.onChanged!.call(value);
+      },
+      style: textStyle,
+      controller: controller,
+      scrollPadding: const EdgeInsets.only(bottom: 200),
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+        fillColor: ColorConstants.kLightGrey400,
+        focusColor: ColorConstants.kLightGrey400,
+        isDense: true,
+        filled: true,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(60),
+          borderSide: BorderSide(width: 1.0, color: ColorConstants.kGrey600),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(60),
+          borderSide: BorderSide(width: 1.0, color: ColorConstants.kGrey600),
+        ),
+        enabled: true,
+        hintText: hintText,
+        hintStyle: textStyle,
+        prefixIcon: Icon(
+          Icons.search,
+          color: ColorConstants.kGrey,
+          weight: 2.0,
+          size: 22,
+        ),
+      ),
+    );
   }
 }

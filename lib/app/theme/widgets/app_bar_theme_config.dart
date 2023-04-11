@@ -13,5 +13,6 @@ appBarThemeConfig(context) {
       systemOverlayStyle: SystemUiOverlayStyle.light,
       toolbarHeight: toolbarHeight,
       color: colorTheme,
+      elevation: 0,
       titleTextStyle: textTheme.headlineSmall);
 }

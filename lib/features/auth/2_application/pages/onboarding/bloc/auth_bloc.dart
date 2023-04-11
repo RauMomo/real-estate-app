@@ -55,20 +55,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> with ChangeNotifier {
         message: _mapFailureToMessage(l),
       ));
     }, (r) {
-      debugPrint('SUKSES');
+      // debugPrint('SUKSES SEBAGAI USER: ${r.user!.displayName}');
 
       final cleanDataRes = UserCredentialModel(
           credential: r,
-          accessToken: r.credential!.accessToken!,
-          displayName: r.user!.displayName!,
+          displayName: r.user!.displayName ?? 'Qiko',
           email: r.user!.email!,
           isNewUser: r.additionalUserInfo!.isNewUser,
-          token: r.credential!.token,
           uid: r.user!.uid);
 
       emit(
         AuthLoginSuccess(email: cleanDataRes.email, password: event.password),
-        
       );
       return Right(r);
     });

@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate_app/shared/constants/colors.dart';
 import 'package:real_estate_app/shared/constants/ui_size_constants.dart';
+import 'package:real_estate_app/shared/widgets/add_button.dart';
 
-enum ButtonType { fill, outlined }
-
-class AddButton extends StatelessWidget {
+class FilterButton extends StatelessWidget {
   final ButtonType type;
   final bool isFullWidth;
   final String buttonText;
   final VoidCallback onPressed;
+  final bool isSelected;
   final double heightSize;
-  final double? widthSize;
-  final Color? color;
 
-  const AddButton({
+  const FilterButton({
     Key? key,
     required this.type,
     required this.isFullWidth,
     required this.buttonText,
     required this.onPressed,
+    this.isSelected = false,
     this.heightSize = 36,
-    this.widthSize,
-    this.color,
   }) : super(key: key);
 
   @override
@@ -60,24 +57,25 @@ class AddButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: theme.elevatedButtonTheme.style!.copyWith(
-        backgroundColor:
-            MaterialStatePropertyAll(color ?? ColorConstants.kPrimary),
         fixedSize: MaterialStatePropertyAll(
-          widthSize == null
-              ? Size.fromHeight(heightSize)
-              : Size(
-                  widthSize!,
-                  heightSize,
-                ),
+          Size.fromHeight(heightSize),
         ),
+        shape: MaterialStatePropertyAll(
+          BeveledRectangleBorder(
+            side: BorderSide(width: 1.0, color: ColorConstants.kGrey200),
+          ),
+        ),
+        backgroundColor: isSelected
+            ? MaterialStatePropertyAll(ColorConstants.kPrimary)
+            : MaterialStatePropertyAll(ColorConstants.kGrey200),
       ),
       child: Text(
         buttonText,
         style: theme.textTheme.displayMedium!.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+            color: isSelected ? ColorConstants.kWhite : Colors.black,
+            fontWeight: FontWeight.normal,
             letterSpacing: 0.4,
-            height: 1.15),
+            height: 1.2),
       ),
     );
   }

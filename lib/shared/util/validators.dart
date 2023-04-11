@@ -47,8 +47,8 @@ class FormValidatorBuilder {
   }
 
   static final RegExp _anyLetter = RegExp(r'[A-Za-z]');
-  static final RegExp _mustContainLetter = RegExp(r'^(?=.*[A-Z]');
-  static final RegExp _mustContainDigit = RegExp(r'^(?=.*?[0-9]');
+  static final RegExp _mustContainLetter = RegExp(r'^(?=.*[A-Z])');
+  static final RegExp _mustContainDigit = RegExp(r'^(?=.*[0-9])');
   static final RegExp _nonDigitsExp = RegExp(r'^(?=.*?[#?!@$%^&*-])');
 
   FormValidatorBuilder minLength(len, attr) => add((value) {

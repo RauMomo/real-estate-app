@@ -5,17 +5,17 @@ import 'package:real_estate_app/features/auth/2_application/pages/home/filter_pa
 import 'package:real_estate_app/features/auth/2_application/pages/home/models/apart_model.dart';
 import 'package:real_estate_app/shared/constants/colors.dart';
 import 'package:real_estate_app/shared/constants/ui_size_constants.dart';
-import 'package:real_estate_app/shared/widgets/button_list.dart';
 import 'package:real_estate_app/shared/widgets/one_liner_text_field.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class FavoritePage extends StatefulWidget {
+  const FavoritePage({Key? key}) : super(key: key);
+  static const String path = '/favorite';
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<FavoritePage> createState() => _FavoritePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _FavoritePageState extends State<FavoritePage> {
   final List<String> buttonList = [
     '3 Guest',
     'Apartment',
@@ -26,10 +26,10 @@ class _HomePageState extends State<HomePage> {
 
   final List<ApartModel> apartList = [
     const ApartModel(
-        apartName: 'Suny Apartment',
+        apartName: 'Hazy Apartment',
         isLiked: false,
-        fullAddress: 'Jalan Conch',
-        location: 'Los Angeles',
+        fullAddress: 'Jalan Derp',
+        location: 'Taco',
         pricePerDay: 233,
         rating: 9.1,
         targetedMiles: 2.7),
@@ -42,57 +42,6 @@ class _HomePageState extends State<HomePage> {
         rating: 7.2,
         targetedMiles: 3.3),
     const ApartModel(
-        apartName: 'Rainy Apartment',
-        isLiked: true,
-        fullAddress: 'Jalan Muster',
-        location: 'Washington',
-        pricePerDay: 365,
-        rating: 9.5,
-        targetedMiles: 0.8),
-    const ApartModel(
-        apartName: 'Fine Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Raino',
-        location: 'Talladega',
-        pricePerDay: 153,
-        rating: 8.7,
-        targetedMiles: 4.4)
-  ];
-
-  final List<ApartModel> offersList = [
-    const ApartModel(
-        image: 'assets/images/apartment_building_2.png',
-        offer: '3 nights',
-        apartName: 'Suny Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Conch',
-        location: 'Los Angeles',
-        pricePerDay: 233,
-        rating: 9.1,
-        targetedMiles: 2.7),
-    const ApartModel(
-        image: 'assets/images/apartment_building.jpeg',
-        offer: '1 nights',
-        apartName: 'Cloudy Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Coral',
-        location: 'Arizona',
-        pricePerDay: 187,
-        rating: 7.2,
-        targetedMiles: 3.3),
-    const ApartModel(
-        image: 'assets/images/apartment_building_2.png',
-        offer: '3 nights',
-        apartName: 'Rainy Apartment',
-        isLiked: true,
-        fullAddress: 'Jalan Muster',
-        location: 'Washington',
-        pricePerDay: 365,
-        rating: 9.5,
-        targetedMiles: 0.8),
-    const ApartModel(
-        image: 'assets/images/apartment_building_2.png',
-        offer: '2 nights',
         apartName: 'Fine Apartment',
         isLiked: false,
         fullAddress: 'Jalan Raino',
@@ -151,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                 child: OneLinerTextField(
                   affinity: ControlAffinity.leading,
                   needValidation: false,
-                  hintText: 'Search via City',
+                  hintText: 'Search for apartments',
                   onChanged: (p0) {},
                 ),
               )
@@ -167,19 +116,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   _buildBody() {
+    final textTheme = Theme.of(context).textTheme;
     return SafeArea(
-      child: Padding(
+      child: Container(
+        height: screenHeight(context),
         padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildChipList(),
-              vSpaceRegular,
-              _buildApartList(),
-              _buildOtherOffers()
-            ],
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Favorite Apartments',
+              style: textTheme.headlineMedium,
+            ),
+            vSpaceRegular,
+            Expanded(
+              child: _buildApartList(),
+            ),
+          ],
         ),
       ),
     );
@@ -192,8 +146,9 @@ class _HomePageState extends State<HomePage> {
     final imageResponsiveHeight =
         screenHeightPercentage(context, percentage: .24);
     return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      physics: const AlwaysScrollableScrollPhysics(),
+      primary: true,
       itemExtent: cardResponsiveHeight,
       itemBuilder: (context, index) {
         final obj = apartList[index];
@@ -314,148 +269,6 @@ class _HomePageState extends State<HomePage> {
         );
       },
       itemCount: apartList.length,
-    );
-  }
-
-  _buildChipList() {
-    return ButtonList(
-      buttonList: buttonList,
-      onChanged: (p0) {
-        debugPrint('masukk');
-      },
-    );
-  }
-
-  _buildOtherOffers() {
-    final textTheme = Theme.of(context).textTheme;
-    final cardResponsiveWidth = screenWidthPercentage(context, percentage: .8);
-    final imageResponsiveHeight =
-        screenHeightPercentage(context, percentage: .24);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Other offers',
-          style: textTheme.headlineMedium,
-        ),
-        vSpaceSmall,
-        SizedBox(
-          height: 260,
-          child: ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemExtent: cardResponsiveWidth,
-            itemBuilder: (context, index) {
-              final obj = offersList[index];
-              return Card(
-                borderOnForeground: true,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                semanticContainer: true,
-                color: Colors.transparent,
-                elevation: 0.0,
-                margin: const EdgeInsets.only(bottom: 16, right: 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      width: screenWidth(context),
-                      height: imageResponsiveHeight,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.0),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage(obj.image),
-                        ),
-                      ),
-                      child: Stack(
-                        children: [
-                          Align(
-                            alignment: AlignmentDirectional.topEnd,
-                            child: Icon(
-                              Icons.favorite,
-                              color: ColorConstants.kError800,
-                            ),
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.topStart,
-                            child: Transform.translate(
-                              offset: const Offset(0, -8.0),
-                              child: Chip(
-                                visualDensity: const VisualDensity(
-                                    horizontal: 0, vertical: -3),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                shape: const BeveledRectangleBorder(),
-                                label: Text(
-                                  obj.offer,
-                                  style: textTheme.displayMedium!.copyWith(
-                                      height: 1.3,
-                                      fontSize: 15,
-                                      color: ColorConstants.kWhite),
-                                ),
-                                backgroundColor: ColorConstants.kError,
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.bottomStart,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      obj.apartName,
-                                      style: textTheme.headlineMedium!.copyWith(
-                                          height: 1.3,
-                                          color: ColorConstants.kWhite),
-                                    ),
-                                  ],
-                                ),
-                                Transform.translate(
-                                  offset: const Offset(0, 0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/svg/location_white.svg',
-                                        height: 18,
-                                        alignment:
-                                            AlignmentDirectional.bottomCenter,
-                                      ),
-                                      hSpaceTiny,
-                                      Text(
-                                        obj.location,
-                                        style: textTheme.displayMedium!
-                                            .copyWith(
-                                                color: ColorConstants.kWhite,
-                                                fontSize: 15,
-                                                height: 1.5),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-            itemCount: offersList.length,
-          ),
-        ),
-      ],
     );
   }
 }

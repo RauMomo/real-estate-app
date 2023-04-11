@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:real_estate_app/shared/constants/colors.dart';
 import 'package:real_estate_app/shared/constants/ui_size_constants.dart';
 
-enum ButtonType { fill, outlined }
+enum IconWTextButtonType { fill, outlined }
 
-class AddButton extends StatelessWidget {
-  final ButtonType type;
+class IconWTextButton extends StatelessWidget {
+  final IconWTextButtonType type;
   final bool isFullWidth;
+  final IconData icon;
   final String buttonText;
   final VoidCallback onPressed;
   final double heightSize;
   final double? widthSize;
-  final Color? color;
 
-  const AddButton({
+  const IconWTextButton({
     Key? key,
     required this.type,
     required this.isFullWidth,
+    required this.icon,
     required this.buttonText,
     required this.onPressed,
     this.heightSize = 36,
     this.widthSize,
-    this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return type == ButtonType.fill
+    return type == IconWTextButtonType.fill
         ? _buildFillButtonWrapper(context)
         : _buildOutlinedButtonWrapper(context);
   }
@@ -57,11 +56,9 @@ class AddButton extends StatelessWidget {
 
   _buildFillButton(context) {
     final theme = Theme.of(context);
-    return ElevatedButton(
+    return ElevatedButton.icon(
       onPressed: onPressed,
       style: theme.elevatedButtonTheme.style!.copyWith(
-        backgroundColor:
-            MaterialStatePropertyAll(color ?? ColorConstants.kPrimary),
         fixedSize: MaterialStatePropertyAll(
           widthSize == null
               ? Size.fromHeight(heightSize)
@@ -71,7 +68,8 @@ class AddButton extends StatelessWidget {
                 ),
         ),
       ),
-      child: Text(
+      icon: Icon(icon, size: 28),
+      label: Text(
         buttonText,
         style: theme.textTheme.displayMedium!.copyWith(
             color: Colors.white,
