@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 class ApartModel extends Equatable {
+  final ObjectId id;
   final bool isLiked;
   final double targetedMiles;
   final String apartName;
@@ -10,18 +12,21 @@ class ApartModel extends Equatable {
   final double rating;
   final String image;
   final String currency;
-  final String offer;
+  final bool isOffer;
+  final String offerDetail;
 
   const ApartModel(
-      {required this.isLiked,
-      required this.targetedMiles,
+      {required this.id,
+      this.isLiked = false,
+      this.targetedMiles = 10,
       required this.apartName,
       required this.location,
       required this.fullAddress,
       required this.pricePerDay,
-      required this.rating,
-      this.offer = '',
+      this.rating = 5,
+      this.isOffer = false,
       this.currency = "\u0024",
+      this.offerDetail = '',
       this.image = 'assets/images/apart_preview.png'});
 
   @override
@@ -33,6 +38,32 @@ class ApartModel extends Equatable {
         fullAddress,
         pricePerDay,
         rating,
-        offer,
+        isOffer,
       ];
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      "_id": id,
+      'apartName': apartName,
+      'location': location,
+      'fullAddress': fullAddress,
+      'pricePerDay': pricePerDay,
+      'image': image,
+      'isOffer': isOffer
+    };
+  }
+
+  factory ApartModel.fromMap(Map<String, dynamic> map) {
+    return ApartModel(
+        offerDetail: map.containsKey('offerDetail')
+            ? map['offerDetail'] as String
+            : 'Ahaha',
+        id: map['_id'] as ObjectId,
+        apartName: map['apartName'] as String,
+        location: map['location'] as String,
+        fullAddress: map['fullAddress'] as String,
+        pricePerDay: map['pricePerDay'] as int,
+        image: map['image'] as String,
+        isOffer: map['isOffer'] as bool);
+  }
 }

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:real_estate_app/app/network/provider/stream_chat_provider.dart';
+import 'package:real_estate_app/core/dependency_injection.dart';
 import 'package:real_estate_app/features/auth/2_application/pages/apartments/apartment_detail.dart';
+import 'package:real_estate_app/features/auth/2_application/pages/home/bloc/home_bloc.dart';
 import 'package:real_estate_app/features/auth/2_application/pages/home/filter_page.dart';
 import 'package:real_estate_app/features/auth/2_application/pages/home/models/apart_model.dart';
 import 'package:real_estate_app/shared/constants/colors.dart';
 import 'package:real_estate_app/shared/constants/ui_size_constants.dart';
 import 'package:real_estate_app/shared/widgets/button_list.dart';
 import 'package:real_estate_app/shared/widgets/one_liner_text_field.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,89 +29,25 @@ class _HomePageState extends State<HomePage> {
     'Bathtub'
   ];
 
-  final List<ApartModel> apartList = [
-    const ApartModel(
-        apartName: 'Suny Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Conch',
-        location: 'Los Angeles',
-        pricePerDay: 233,
-        rating: 9.1,
-        targetedMiles: 2.7),
-    const ApartModel(
-        apartName: 'Cloudy Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Coral',
-        location: 'Arizona',
-        pricePerDay: 187,
-        rating: 7.2,
-        targetedMiles: 3.3),
-    const ApartModel(
-        apartName: 'Rainy Apartment',
-        isLiked: true,
-        fullAddress: 'Jalan Muster',
-        location: 'Washington',
-        pricePerDay: 365,
-        rating: 9.5,
-        targetedMiles: 0.8),
-    const ApartModel(
-        apartName: 'Fine Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Raino',
-        location: 'Talladega',
-        pricePerDay: 153,
-        rating: 8.7,
-        targetedMiles: 4.4)
-  ];
+  late List<ApartModel> apartList;
+  late List<ApartModel> offersList;
+  late StreamChannelListController controller;
 
-  final List<ApartModel> offersList = [
-    const ApartModel(
-        image: 'assets/images/apartment_building_2.png',
-        offer: '3 nights',
-        apartName: 'Suny Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Conch',
-        location: 'Los Angeles',
-        pricePerDay: 233,
-        rating: 9.1,
-        targetedMiles: 2.7),
-    const ApartModel(
-        image: 'assets/images/apartment_building.jpeg',
-        offer: '1 nights',
-        apartName: 'Cloudy Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Coral',
-        location: 'Arizona',
-        pricePerDay: 187,
-        rating: 7.2,
-        targetedMiles: 3.3),
-    const ApartModel(
-        image: 'assets/images/apartment_building_2.png',
-        offer: '3 nights',
-        apartName: 'Rainy Apartment',
-        isLiked: true,
-        fullAddress: 'Jalan Muster',
-        location: 'Washington',
-        pricePerDay: 365,
-        rating: 9.5,
-        targetedMiles: 0.8),
-    const ApartModel(
-        image: 'assets/images/apartment_building_2.png',
-        offer: '2 nights',
-        apartName: 'Fine Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Raino',
-        location: 'Talladega',
-        pricePerDay: 153,
-        rating: 8.7,
-        targetedMiles: 4.4)
-  ];
+  @override
+  void initState() {
+    context.read<HomeBloc>().add(
+          HomeRequestedAparts(),
+        );
+
+    final chatProvider = sl.get<StreamChatProvider>();
+    // controller = StreamChannelListController(client: chatProvider.client);
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(),
-    );
+    return Scaffold(appBar: _buildAppBar(), body: _buildBody());
   }
 
   _buildAppBar() {
@@ -167,21 +108,41 @@ class _HomePageState extends State<HomePage> {
   }
 
   _buildBody() {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildChipList(),
-              vSpaceRegular,
-              _buildApartList(),
-              _buildOtherOffers()
-            ],
-          ),
-        ),
-      ),
+    return BlocConsumer<HomeBloc, HomeState>(
+      bloc: context.read<HomeBloc>(),
+      listener: (context, state) async {
+        if (state is HomeInitial) {
+          debugPrint('masukk');
+          context.read<HomeBloc>().add(
+                HomeRequestedAparts(),
+              );
+        }
+      },
+      builder: (context, state) {
+        if (state is HomeInitial) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is HomeCompletedState) {
+          apartList = state.apartList;
+          offersList = state.offersList;
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildChipList(),
+                    vSpaceRegular,
+                    _buildApartList(),
+                    _buildOtherOffers()
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -392,7 +353,7 @@ class _HomePageState extends State<HomePage> {
                                     const EdgeInsets.symmetric(horizontal: 12),
                                 shape: const BeveledRectangleBorder(),
                                 label: Text(
-                                  obj.offer,
+                                  obj.offerDetail,
                                   style: textTheme.displayMedium!.copyWith(
                                       height: 1.3,
                                       fontSize: 15,

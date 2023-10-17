@@ -12,12 +12,10 @@ class DBProvider {
     app = await Firebase.initializeApp(options: options);
     auth = FirebaseAuth.instanceFor(app: app!);
     firestore = FirebaseFirestore.instanceFor(app: app!);
+  }
 
-    auth!.authStateChanges().listen((event) {
-      if (event != null) {
-        user = event;
-      }
-    });
+  Stream onAuthStateChanged() {
+    return auth!.authStateChanges();
   }
 
   User? user;

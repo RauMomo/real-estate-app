@@ -8,6 +8,7 @@ class ThemeService {
     return ThemeData(
       appBarTheme: appBarThemeConfig(context),
       textTheme: textThemeConfig(),
+      iconTheme: IconThemeData(color: ColorConstants.kPrimary, size: 28),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,

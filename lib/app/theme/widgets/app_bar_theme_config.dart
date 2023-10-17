@@ -10,7 +10,9 @@ appBarThemeConfig(context) {
   final colorTheme = ColorConstants.kPrimary;
   return AppBarTheme(
       centerTitle: true,
-      systemOverlayStyle: SystemUiOverlayStyle.light,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          systemStatusBarContrastEnforced: true),
       toolbarHeight: toolbarHeight,
       color: colorTheme,
       elevation: 0,

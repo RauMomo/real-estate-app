@@ -25,30 +25,30 @@ class _FavoritePageState extends State<FavoritePage> {
   ];
 
   final List<ApartModel> apartList = [
-    const ApartModel(
-        apartName: 'Hazy Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Derp',
-        location: 'Taco',
-        pricePerDay: 233,
-        rating: 9.1,
-        targetedMiles: 2.7),
-    const ApartModel(
-        apartName: 'Cloudy Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Coral',
-        location: 'Arizona',
-        pricePerDay: 187,
-        rating: 7.2,
-        targetedMiles: 3.3),
-    const ApartModel(
-        apartName: 'Fine Apartment',
-        isLiked: false,
-        fullAddress: 'Jalan Raino',
-        location: 'Talladega',
-        pricePerDay: 153,
-        rating: 8.7,
-        targetedMiles: 4.4)
+    // const ApartModel(
+    //     apartName: 'Hazy Apartment',
+    //     isLiked: false,
+    //     fullAddress: 'Jalan Derp',
+    //     location: 'Taco',
+    //     pricePerDay: 233,
+    //     rating: 9.1,
+    //     targetedMiles: 2.7),
+    // const ApartModel(
+    //     apartName: 'Cloudy Apartment',
+    //     isLiked: false,
+    //     fullAddress: 'Jalan Coral',
+    //     location: 'Arizona',
+    //     pricePerDay: 187,
+    //     rating: 7.2,
+    //     targetedMiles: 3.3),
+    // const ApartModel(
+    //     apartName: 'Fine Apartment',
+    //     isLiked: false,
+    //     fullAddress: 'Jalan Raino',
+    //     location: 'Talladega',
+    //     pricePerDay: 153,
+    //     rating: 8.7,
+    //     targetedMiles: 4.4)
   ];
   @override
   Widget build(BuildContext context) {

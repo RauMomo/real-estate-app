@@ -11,6 +11,19 @@ Color hexToColor(String hexCode) {
   );
 }
 
+String parseUsername(String? email) {
+  var tempEmail = '';
+  if (email == null) {
+    tempEmail = 'user@gmail.com';
+  } else {
+    tempEmail = email;
+  }
+  return tempEmail.substring(
+    0,
+    tempEmail.indexOf('@'),
+  );
+}
+
 double pxToDouble({required double px}) {
   return 0.08333333 * px;
 }

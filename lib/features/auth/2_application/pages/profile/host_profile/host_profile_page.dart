@@ -2,25 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:real_estate_app/features/auth/2_application/pages/home/models/apart_model.dart';
 import 'package:real_estate_app/features/auth/2_application/pages/profile/models/profile_data.dart';
-import 'package:real_estate_app/features/auth/2_application/pages/profile/widgets/profile_custom_appbar.dart';
+import 'package:real_estate_app/features/auth/2_application/pages/profile/review/review_page.dart';
 import 'package:real_estate_app/shared/constants/colors.dart';
 import 'package:real_estate_app/shared/constants/ui_size_constants.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+import '../widgets/profile_custom_appbar.dart';
 
-  static const String path = '/profile';
+class HostProfilePage extends StatefulWidget {
+  const HostProfilePage({Key? key}) : super(key: key);
+
+  static const String path = '/host-profile';
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<HostProfilePage> createState() => _HostProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage>
+class _HostProfilePageState extends State<HostProfilePage>
     with SingleTickerProviderStateMixin {
   late ProfileData hostProfile;
   late PageController pageCtrl;
   late List<String> pageChoices;
-  late List<Widget> pageWidgets;
   late int currPage;
 
   final List<ApartModel> apartList = [
@@ -63,21 +64,18 @@ class _ProfilePageState extends State<ProfilePage>
     currPage = 0;
 
     hostProfile = const ProfileData(
-        name: 'Margaret Novakowska',
+        name: 'Jack Nicholson',
         location: 'Los Angeles',
         description:
-            'Hi! I am a Margaret, I really like traveling to really different countries, most often I am looking for flats that have very friendly landlords in a good location.');
+            'I am a Jack and I have 6 apartments for rent short and long term, I invite tenants who appreciate the convenience of use and nice aesthetic interiors');
     pageCtrl = PageController(initialPage: currPage);
-    pageChoices = ['Rent History', 'Settings'];
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    pageWidgets = [_buildRentHistory(), _buildSettings()];
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: _buildAppBar(),
       body: _buildBody(),
     );
@@ -93,25 +91,23 @@ class _ProfilePageState extends State<ProfilePage>
 
   _buildBody() {
     final theme = Theme.of(context);
-    return SafeArea(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          NestedScrollView(
-            floatHeaderSlivers: true,
-            body: _buildBodyContent(),
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverPersistentHeader(
-                  delegate: ProfileCustomAppbar(isProfile: true),
-                  pinned: false,
-                  floating: true,
-                )
-              ];
-            },
-          ),
-        ],
-      ),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        NestedScrollView(
+          floatHeaderSlivers: true,
+          body: _buildBodyContent(),
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverPersistentHeader(
+                delegate: ProfileCustomAppbar(isProfile: false),
+                pinned: false,
+                floating: true,
+              )
+            ];
+          },
+        ),
+      ],
     );
   }
 
@@ -142,6 +138,46 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             ],
           ),
+          vSpaceSmall,
+          Row(
+            children: [
+              Row(
+                children: List.generate(
+                  5,
+                  (index) => Icon(Icons.star, color: Colors.yellow.shade700),
+                ),
+              ),
+              hSpaceSmall,
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed(ReviewPage.path);
+                },
+                child: Text(
+                  '433 Reviews',
+                  style: textTheme.displayMedium!.copyWith(
+                    color: ColorConstants.kGrey,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          vSpaceSmall,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.messenger_outline_sharp,
+                color: ColorConstants.kGrey,
+              ),
+              hSpaceSmall,
+              Text(
+                'Speaks in Deutsch, English, Russian',
+                style: textTheme.displayMedium!
+                    .copyWith(height: 1.25, color: ColorConstants.kGrey),
+              ),
+            ],
+          ),
           Divider(
             endIndent: screenWidthPercentage(context, percentage: .7),
             height: screenHeightPercentage(context, percentage: .05),
@@ -152,64 +188,15 @@ class _ProfilePageState extends State<ProfilePage>
             style:
                 textTheme.displayMedium!.copyWith(color: ColorConstants.kGrey),
           ),
-          vSpaceRegular,
-          Row(
-            children: pageChoices.map<Widget>(
-              (e) {
-                var index = pageChoices.indexOf(e);
-                return Column(
-                  children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                          visualDensity: const VisualDensity(
-                              horizontal: VisualDensity.minimumDensity,
-                              vertical: VisualDensity.minimumDensity),
-                          side: BorderSide.none,
-                          backgroundColor: Colors.transparent),
-                      onPressed: () {
-                        setState(() {
-                          currPage = index;
-                          pageCtrl.animateToPage(index,
-                              duration: const Duration(milliseconds: 500),
-                              curve: Curves.ease);
-                        });
-                      },
-                      child: Text(
-                        e,
-                        style: textTheme.labelLarge!.copyWith(
-                            color: index == currPage
-                                ? Colors.black
-                                : ColorConstants.kGrey),
-                      ),
-                    ),
-                    Visibility(
-                      visible: index == currPage,
-                      replacement: const SizedBox(height: 10),
-                      child: Center(
-                        child: Container(
-                          height: 10,
-                          width: 10,
-                          decoration: BoxDecoration(
-                              color: ColorConstants.kPrimary,
-                              shape: BoxShape.circle),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ).toList(),
+          vSpaceMedium,
+          Text(
+            'My apartments for rent',
+            style: textTheme.headlineMedium,
           ),
           vSpaceRegular,
           Expanded(
-            child: PageView.builder(
-              pageSnapping: true,
-              clipBehavior: Clip.antiAlias,
-              controller: pageCtrl,
-              itemCount: pageWidgets.length,
-              itemBuilder: (context, index) => pageWidgets[index],
-            ),
-          ),
+            child: _buildRentHistory(),
+          )
         ],
       ),
     );

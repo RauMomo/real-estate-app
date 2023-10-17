@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:real_estate_app/features/auth/2_application/pages/chat/chat_list.dart';
+import 'package:real_estate_app/features/auth/2_application/pages/chat/chat_list_page.dart';
 import 'package:real_estate_app/features/auth/2_application/pages/favorites/favorite_page.dart';
 import 'package:real_estate_app/features/auth/2_application/pages/home/home_page.dart';
+import 'package:real_estate_app/features/auth/2_application/pages/profile/profile_page.dart';
 import 'package:real_estate_app/shared/constants/colors.dart';
 
 class MainPage extends StatefulWidget {
@@ -18,8 +19,9 @@ class MainPageState extends State<MainPage> {
     const HomePage(),
     const FavoritePage(),
     const ChatListPage(),
-    const HomePage()
+    const ProfilePage(),
   ];
+  
   @override
   void initState() {
     super.initState();
